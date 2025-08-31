@@ -12,6 +12,10 @@
 
 
 void getFruit(int invalue, int inindex);
+void suspiciousJuicerGame();
+void rollingPinGame();
+void kitchenKnifeGame();
+int roll10();
 
 int handleSteps(char instring[]) {
 
@@ -117,8 +121,8 @@ int main(void) {
 
     if (cmpgod == 0) {
         for (i = 0; i < 4; i++) {
-            fruitsalad = rand() % 63;
-            getFruit(fruitsalad, i); // CHANGE THIS
+            fruitsalad = rand() % 256;
+            getFruit(fruitsalad, i);
         }
 
         goto KITCHEN;
@@ -147,7 +151,7 @@ int main(void) {
             if (gathercount > 0) {    // Reduce amount of duplicates here
                 for (int j = 0; j < gathercount; j++) {
                     if (fruitsaladlist[j] == fruitsalad) {
-                        if (fruitsalad > 62) {   // Disable out of bound
+                        if (fruitsalad > 255) {   // Disable out of bound
                             fruitsalad = 0;
                         }
                         fruitsalad++;
@@ -174,21 +178,22 @@ int main(void) {
 
 
         if (c == 'w') {
-            puts(
-                "o  o  o\n"
-            " o o o o");
+            puts("^");
             fruitfactor *= 1;
         }
 
         else if (c == 'a') {
+            puts("<");
             fruitfactor *= 2;
         }
 
         else if (c == 's') {
+            puts("v");
             fruitfactor *= 3;
         }
 
         else if (c == 'd') {
+            puts(">");
             fruitfactor *= 4;
         }
 
@@ -199,9 +204,60 @@ int main(void) {
     disableRawMode();
 
 
-    // KITCHEN
+    // KITCHEN - Have each choice have their own mini game here
+    // Kitchen knife will spawn the goblins
+    // Goblins will attack and user will have to dodge, when hit it's game over
+    // Rolling Pin will prompt to roll up up up down down down up up down down up
+    // - On sequence miss the user must start over.
+    // Swedish Cheese Grater is just a dummy and will ask user for a rechoice
     KITCHEN:
-    printf("Inside Kitchen\n");
+    int kitchenchoice;
+    int battermixlevel;
+    int luckycheck;
+    char batter[4];
+    puts("#########################\n"
+        "###       LEVEL 2     ###\n"
+        "### Grandma's Kitchen ###\n"
+        "#########################");
+    puts("Good job in making it to Grandma's Kitchen!\n"
+        "Now it's time to prepare the fruits, but beware of The Garden Goblins.\n");
+
+    printf("Your basket contains:\n");
+    for (int k = 0; k < 4; k++) {
+        printf("%s\n", fruitsgathered[k]);
+    }
+
+
+    while (true) {
+        puts("Pick your tool:\n"
+        "1. Suspicious Juicer [Easiest]\n"
+        "2. Rolling Pin [Easy]\n"
+        "3. Swedish Cheese Grater [?]\n"
+        "4. Kitchen Knife [Hard]\n"
+        "5. Godmode [Cheater]");
+
+        scanf("%d", &kitchenchoice);
+
+        if (!(kitchenchoice > 0 && kitchenchoice < 6)) {
+            printf("Input 1-5 to make your choice.\n");
+            while((getchar()) != '\n');  // Flush
+            continue;
+        }
+
+        if (kitchenchoice == 3) {
+            printf("Swedish Cheese Grater is not a good tool, try again\n");
+        }
+
+        else if (kitchenchoice == 5) {
+            printf("Godmode is not allowed here!");
+        }
+
+        else if (kitchenchoice == 1) {
+            suspiciousJuicerGame();
+        }
+
+
+    }
 
     return 0;
 
@@ -212,4 +268,70 @@ void getFruit(int invalue, int inindex) {
     strcpy(fruitsgathered[inindex],fruits[invalue]);
     printf("You found: %s\n", fruitsgathered[inindex]);
 
+}
+
+void suspiciousJuicerGame() {
+    int mixerlevel;
+    int mixingseconds;
+    int secondcount = 0;
+    int luckynumber;
+    bool earringaquired = false;
+    puts("In the cupboard above you notice grandma's Suspicious Juicer.\n"
+        "You remember from early childhood just how unreliable it can be.\n"
+        "Grandma is waiting for her cake so no time to waste!\n"
+        "Set the mixer level:\n"
+        "1 | 2 | 3 | 4 | 5 WARNING!!!!\n");
+
+    while (true) {
+        scanf("%d", &mixerlevel);
+        if (!(mixerlevel> 0 && mixerlevel < 6)) {
+            printf("Input 1-5 to set the level.\n");
+            puts("Set the mixer level:\n"
+                   "1 | 2 | 3 | 4 | 5 WARNING!!!!\n");
+            while((getchar()) != '\n');  // Flush
+            continue;
+        }
+
+        if (mixerlevel == 1) {
+            mixingseconds = 10;
+            printf("You are mixing.\n");
+            while (secondcount <= mixingseconds) {
+                switch (secondcount % 3) {
+                    case 0: printf("Clang.\n"); break;
+                    case 1: printf("Clang.\n"); break;
+                    case 2: printf("Clunk.\n"); break;
+                    default: ;
+                }
+                secondcount++;
+            }
+
+            luckynumber = roll10();
+
+            printf("Mixing done!!");
+            puts("White smoke comes out of the juicer and the low mixing level yielded\n"
+                "chunky rocklike fuit parts you wonder if grandma will approve of ...\n");
+
+            if (luckynumber > 9) {
+                puts("But you were lucky this time and Godess Fortuna shone on the Suspicious Juicer!\n"
+                    "In the insides of the fruit meats you find grandma's lost earring, wonder how it ended up there!");
+                earringaquired = true;
+
+                luckynumber = roll10();
+
+                if (luckynumber < 2) {
+                    puts("You reach out with your stroganoff fingers inside the Suspicious Juicer\n."
+                        "Stupid you forgot to pull the plug and you accidently turn the mixer on again ...\n"
+                        "You lose your fingers and grandma have to drive you to the hospital.\n"
+                        "GAME ENDED");
+                    exit(0);
+                }
+            }
+        }
+    }
+
+
+}
+
+int roll10() {
+    return rand() % 10 + 1;
 }
