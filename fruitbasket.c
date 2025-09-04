@@ -13,13 +13,19 @@
 
 void getFruit(int invalue, int inindex);
 void suspiciousJuicerGame();
+void* flyingPlates();  // Threaded
+void printPlatesRight();
+void printPlatesLeft();
 void rollingPinGame();
 void kitchenKnifeGame();
+void handleDeath();
 int roll10();
 
-int handleSteps(char instring[]) {
+bool FLYINGPLATESEND = false;
+bool dodgeright = false;
+bool dodgeleft = false;
+int dodgecount = 0;
 
-}
 
 // Struct and functions to set/unset terminal to raw mode to read bytes from stdin - Enable keypressed
 struct termios orig_termios;
@@ -254,11 +260,13 @@ int main(void) {
 
         else if (kitchenchoice == 1) {
             suspiciousJuicerGame();
+            break;
         }
 
 
     }
 
+    EXIT:
     return 0;
 
 }
@@ -276,6 +284,8 @@ void suspiciousJuicerGame() {
     int secondcount = 0;
     int luckynumber;
     bool earringaquired = false;
+    char cjg;
+    pthread_t id_flyingplates;
     puts("In the cupboard above you notice grandma's Suspicious Juicer.\n"
         "You remember from early childhood just how unreliable it can be.\n"
         "Grandma is waiting for her cake so no time to waste!\n"
@@ -312,7 +322,7 @@ void suspiciousJuicerGame() {
                 "chunky rocklike fuit parts you wonder if grandma will approve of ...\n");
 
             if (luckynumber > 9) {
-                puts("But you were lucky this time and Godess Fortuna shone on the Suspicious Juicer!\n"
+                puts("But you were lucky this time and Goddess Fortuna shone on the Suspicious Juicer!\n"
                     "In the insides of the fruit meats you find grandma's lost earring, wonder how it ended up there!");
                 earringaquired = true;
 
@@ -321,11 +331,99 @@ void suspiciousJuicerGame() {
                 if (luckynumber < 2) {
                     puts("You reach out with your stroganoff fingers inside the Suspicious Juicer\n."
                         "Stupid you forgot to pull the plug and you accidently turn the mixer on again ...\n"
-                        "You lose your fingers and grandma have to drive you to the hospital.\n"
-                        "GAME ENDED");
-                    exit(0);
+                        "You lose your fingers and grandma have to drive you to the hospital.\n");
+                    handleDeath();
                 }
             }
+        }
+
+        else if (mixerlevel == 2) {
+            mixingseconds = 10;
+            printf("You are mixing.\n");
+            while (secondcount <= mixingseconds) {
+                switch (secondcount % 3) {
+                    case 0: printf("Vrrr.\n"); break;
+                    case 1: printf("Vrrr.\n"); break;
+                    case 2: printf("WWWRRRRR!!\n"); break;
+                    default: ;
+                }
+                secondcount++;
+            }
+
+            printf("Mixing done!!");
+            puts("A silent sigh sipper out from the Suspicious Juicer and your are happy that it made it just another time.\n"
+                "Not much of juice, more like a gray batter. You realise just how mid and OHIO this vegetable batter is.\n"
+                "Your best bet now is to success well with Grandma's Oven!\n");
+
+
+        }
+
+        else if (mixerlevel == 3) {
+            mixingseconds = 10;
+            printf("You are mixing.\n");
+            while (secondcount <= mixingseconds) {
+                switch (secondcount % 3) {
+                    case 0: printf("Woosh.\n"); break;
+                    case 1: printf("Swoosh.\n"); break;
+                    case 2: printf("Wooooooooooosh!!\n"); break;
+                    default: ;
+                }
+                secondcount++;
+            }
+
+            printf("Mixing done!!");
+            puts("Phew! The machine managed to handle the massive stress of mixing level 3. Lucky this time nothing bad\n"
+                "happened and you have an OK Juice in the machine. Just some luck needed with Grandma's Oven next and you surely know that\n"
+                "she will be happy with your performance!!\n");
+        }
+
+        else if (mixerlevel == 4) {
+            mixingseconds = 10;
+            printf("You are mixing.\n");
+            while (secondcount <= mixingseconds) {
+                switch (secondcount % 3) {
+                    case 0: printf("GAAAUR.\n"); break;
+                    case 1: printf("MAAWWR.\n"); break;
+                    case 2: printf("FFFTSafafaffaffafafaffafffafafa!!\n"); break;
+                    default: ;
+                }
+                secondcount++;
+            }
+
+            printf("CATASTROPHY!! MADNESS!!");
+            puts("Machine is overheating and glowing, fruit juices are overfilling and spilling on the walls and all over\n"
+                 "Grandma's dear kitchen!! You act fast and go for the plug, pull it out violently but the machine won't stop.\n"
+                 "Its capacitor is overloaded and is now supplying it with continuous current. Grab a plate and defend yourself!\n");
+
+            /* Starting event thread */
+            pthread_create(&id_flyingplates, NULL, flyingPlates, NULL);
+            pthread_join(id_flyingplates, NULL);
+            enableRawMode();
+
+            while (read(STDIN_FILENO, &cjg, 1) == 1 && dodgecount < 6) {
+                if (!(cjg == 'a' || cjg == 'd')) {
+                    dodgeright = false;
+                    dodgeleft = false;
+                    continue;
+                }
+                if (cjg == 'a') {
+                    dodgeleft = true;
+                    dodgeright = false;
+                    sleep(1);
+                    dodgeleft = false;
+                }
+                if (cjg == 'd') {
+                    dodgeright = true;
+                    dodgeleft = false;
+                    sleep(1);
+                    dodgeright = false;
+                }
+            }
+
+            disableRawMode();
+            dodgecount = 0;
+
+
         }
     }
 
@@ -334,4 +432,60 @@ void suspiciousJuicerGame() {
 
 int roll10() {
     return rand() % 10 + 1;
+}
+
+void handleDeath() {
+    printf("GAME ENDED");
+    exit(0);
+}
+
+/// Doing Stuff while listening to keyboard
+/// Let's learn if we can use functions as we want for the thread
+void* flyingPlates() {
+    int randomswitch;
+    while (!FLYINGPLATESEND) { // When ESC is not pressed
+        printf("Plates are flying!!\nPrepare to guard LEFT ('A') or guard RIGHT ('D') or die!!\n");
+        randomswitch = roll10();
+        if (randomswitch % 2 == 0) {
+            printPlatesRight();
+        }
+        else if (randomswitch > 0) {
+            printPlatesLeft();
+        }
+        printf("Blocked!!");
+        dodgecount++;
+    }
+    printf("Printing Thread Finished!\n");
+}
+
+void printPlatesRight() {
+    sleep(1);
+    printf("3");
+    sleep(1);
+    printf("2");
+    sleep(1);
+    printf("1");
+    sleep(1);
+    printf("Guard RIGHT!!");
+    usleep(5 * 1000 * 100);
+    if (!dodgeright) {
+        printf("Plate hit you right in the head and you fell to the ground bleeding your brain out.");
+        handleDeath();
+    }
+}
+
+void printPlatesLeft() {
+    sleep(1);
+    printf("3");
+    sleep(1);
+    printf("2");
+    sleep(1);
+    printf("1");
+    sleep(1);
+    printf("Guard LEFT!!");
+    usleep(5 * 1000 * 100);
+    if (!dodgeleft) {
+        printf("Plate hit you right in the head and you fell to the ground bleeding your brain out.");
+        handleDeath();
+    }
 }
