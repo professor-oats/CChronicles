@@ -14,6 +14,7 @@
 void getFruit(int invalue, int inindex);
 void suspiciousJuicerGame();
 void* flyingPlates();  // Threaded
+void* dodgingPlates(); // Threaded
 void printPlatesRight();
 void printPlatesLeft();
 void rollingPinGame();
@@ -235,7 +236,7 @@ int main(void) {
 
 
     while (true) {
-        puts("Pick your tool:\n"
+        puts("\nPick your tool:\n"
         "1. Suspicious Juicer [Easiest]\n"
         "2. Rolling Pin [Easy]\n"
         "3. Swedish Cheese Grater [?]\n"
@@ -284,8 +285,8 @@ void suspiciousJuicerGame() {
     int secondcount = 0;
     int luckynumber;
     bool earringaquired = false;
-    char cjg;
-    pthread_t id_flyingplates;
+    //char cjg;
+    pthread_t id_flyingplates, id_dodgingplates;
     puts("In the cupboard above you notice grandma's Suspicious Juicer.\n"
         "You remember from early childhood just how unreliable it can be.\n"
         "Grandma is waiting for her cake so no time to waste!\n"
@@ -313,11 +314,12 @@ void suspiciousJuicerGame() {
                     default: ;
                 }
                 secondcount++;
+                sleep(1);
             }
 
             luckynumber = roll10();
 
-            printf("Mixing done!!");
+            printf("\nMixing done!!\n");
             puts("White smoke comes out of the juicer and the low mixing level yielded\n"
                 "chunky rocklike fuit parts you wonder if grandma will approve of ...\n");
 
@@ -335,9 +337,11 @@ void suspiciousJuicerGame() {
                     handleDeath();
                 }
             }
+
+            break;
         }
 
-        else if (mixerlevel == 2) {
+        if (mixerlevel == 2) {
             mixingseconds = 10;
             printf("You are mixing.\n");
             while (secondcount <= mixingseconds) {
@@ -348,17 +352,20 @@ void suspiciousJuicerGame() {
                     default: ;
                 }
                 secondcount++;
+                sleep(1);
             }
 
-            printf("Mixing done!!");
+            printf("\nMixing done!!\n");
             puts("A silent sigh sipper out from the Suspicious Juicer and your are happy that it made it just another time.\n"
                 "Not much of juice, more like a gray batter. You realise just how mid and OHIO this vegetable batter is.\n"
                 "Your best bet now is to success well with Grandma's Oven!\n");
 
+            break;
+
 
         }
 
-        else if (mixerlevel == 3) {
+        if (mixerlevel == 3) {
             mixingseconds = 10;
             printf("You are mixing.\n");
             while (secondcount <= mixingseconds) {
@@ -371,13 +378,15 @@ void suspiciousJuicerGame() {
                 secondcount++;
             }
 
-            printf("Mixing done!!");
+            printf("\nMixing done!!\n");
             puts("Phew! The machine managed to handle the massive stress of mixing level 3. Lucky this time nothing bad\n"
                 "happened and you have an OK Juice in the machine. Just some luck needed with Grandma's Oven next and you surely know that\n"
                 "she will be happy with your performance!!\n");
+
+            break;
         }
 
-        else if (mixerlevel == 4) {
+        if (mixerlevel == 4) {
             mixingseconds = 10;
             printf("You are mixing.\n");
             while (secondcount <= mixingseconds) {
@@ -388,45 +397,31 @@ void suspiciousJuicerGame() {
                     default: ;
                 }
                 secondcount++;
+                sleep(1);
             }
 
-            printf("CATASTROPHY!! MADNESS!!");
+            printf("\nCATASTROPHY!! MADNESS!!\n");
             puts("Machine is overheating and glowing, fruit juices are overfilling and spilling on the walls and all over\n"
                  "Grandma's dear kitchen!! You act fast and go for the plug, pull it out violently but the machine won't stop.\n"
                  "Its capacitor is overloaded and is now supplying it with continuous current. Grab a plate and defend yourself!\n");
 
+            enableRawMode();
             /* Starting event thread */
             pthread_create(&id_flyingplates, NULL, flyingPlates, NULL);
+            pthread_create(&id_dodgingplates, NULL, dodgingPlates, NULL);
             pthread_join(id_flyingplates, NULL);
-            enableRawMode();
+            pthread_join(id_dodgingplates, NULL);
 
-            while (read(STDIN_FILENO, &cjg, 1) == 1 && dodgecount < 6) {
-                if (!(cjg == 'a' || cjg == 'd')) {
-                    dodgeright = false;
-                    dodgeleft = false;
-                    continue;
-                }
-                if (cjg == 'a') {
-                    dodgeleft = true;
-                    dodgeright = false;
-                    sleep(1);
-                    dodgeleft = false;
-                }
-                if (cjg == 'd') {
-                    dodgeright = true;
-                    dodgeleft = false;
-                    sleep(1);
-                    dodgeright = false;
-                }
-            }
 
+            //pthread_join(id_flyingplates, NULL);
             disableRawMode();
+            printf("YOU SURVIVED YOU BASTARD!\n");
             dodgecount = 0;
 
+            break;
 
         }
     }
-
 
 }
 
@@ -443,8 +438,8 @@ void handleDeath() {
 /// Let's learn if we can use functions as we want for the thread
 void* flyingPlates() {
     int randomswitch;
-    while (!FLYINGPLATESEND) { // When ESC is not pressed
-        printf("Plates are flying!!\nPrepare to guard LEFT ('A') or guard RIGHT ('D') or die!!\n");
+    printf("Plates are flying!!\nPrepare to guard LEFT ('A') or guard RIGHT ('D') or die!!\n");
+    while (!FLYINGPLATESEND) {
         randomswitch = roll10();
         if (randomswitch % 2 == 0) {
             printPlatesRight();
@@ -452,40 +447,68 @@ void* flyingPlates() {
         else if (randomswitch > 0) {
             printPlatesLeft();
         }
-        printf("Blocked!!");
+        printf("Blocked!!\n");
         dodgecount++;
     }
     printf("Printing Thread Finished!\n");
 }
 
+void* dodgingPlates() {
+
+    char cjg;
+    while (read(STDIN_FILENO, &cjg, 1) == 1 && dodgecount < 3) {
+        if (!(cjg == 'a' || cjg == 'd')) {
+            dodgeright = false;
+            dodgeleft = false;
+            continue;
+        }
+        if (cjg == 'a') {
+            dodgeleft = true;
+            dodgeright = false;
+            sleep(1);
+            dodgeleft = false;
+        }
+        else if (cjg == 'd') {
+            dodgeright = true;
+            dodgeleft = false;
+            sleep(1);
+            dodgeright = false;
+        }
+    }
+
+    dodgeright = true;
+    dodgeleft = true;
+    FLYINGPLATESEND = true;
+}
+
 void printPlatesRight() {
     sleep(1);
-    printf("3");
+    printf("3\n");
     sleep(1);
-    printf("2");
+    printf("2\n");
     sleep(1);
-    printf("1");
+    printf("1\n");
     sleep(1);
-    printf("Guard RIGHT!!");
-    usleep(5 * 1000 * 100);
+    printf("Guard RIGHT!!\n");
+    sleep(1);
     if (!dodgeright) {
-        printf("Plate hit you right in the head and you fell to the ground bleeding your brain out.");
+        printf("Plate hit you right in the head and you fell to the ground bleeding your brain out.\n");
         handleDeath();
     }
 }
 
 void printPlatesLeft() {
     sleep(1);
-    printf("3");
+    printf("3\n");
     sleep(1);
-    printf("2");
+    printf("2\n");
     sleep(1);
-    printf("1");
+    printf("1\n");
     sleep(1);
-    printf("Guard LEFT!!");
-    usleep(5 * 1000 * 100);
+    printf("Guard LEFT!!\n");
+    sleep(1);
     if (!dodgeleft) {
-        printf("Plate hit you right in the head and you fell to the ground bleeding your brain out.");
+        printf("Plate hit you right in the head and you fell to the ground bleeding your brain out.\n");
         handleDeath();
     }
 }
