@@ -101,7 +101,7 @@ int main(void) {
          "It has been a great year and there are a lot to harvest.\n"
          "Use the WASD keys to navigate in her garden and get as many fruits and vegetables you can.\n"
          "You will get a new vegetable/fruit after each 4 steps you take - Basket is full after 4 aquired fruits\n"
-         "If you are in a rush - Type godmode now to get a random set to use on your journey (may contain duplicates),\n otherwise type start to begin. :)\n");
+         "If you are in a rush - Type godmode now to get a random set to use on your journey (may contain duplicates),\notherwise type start to begin. :)\n");
 
 
     while (true) {
@@ -381,6 +381,7 @@ void suspiciousJuicerGame() {
                     default: ;
                 }
                 secondcount++;
+                sleep(1);
             }
 
             printf("\nMixing done!!\n");
@@ -423,11 +424,36 @@ void suspiciousJuicerGame() {
             dodgecount = 0;
             puts("You survived all flying fruits with fullfledged grace!\n"
                 "The neighbours heard the quarrel and their nosy noses now peak inside of Grandma's blinds.\n"
-                "Their eyes grow big and they see a plate covered shiny knight gnistering in the afternoon sun.\n"
+                "Their eyes grow big and they see a plate covered shiny knight gnistering in the afternoon sun.\n\n"
                 "All hail Sir Fruitalot - Tamer of Suspicious Juicers!!\n");
+            puts("                           .-.\n"
+"                          {{#}}\n"
+"          {}               8@8\n"
+"        .::::.             888\n"
+"    @\\\\/W\\/\\/W\\//@         8@8\n"
+"     \\\\/^\\/\\/^\\//     _    )8(    _\n"
+"      \\_O_{}_O_/     (@)__/8@8\\__(@)\n"
+" ____________________ `~\"-=):(=-\"~`\n"
+"|<><><>  |  |  <><><>|     |.|\n"
+"|<>      |  |      <>|     |S|\n"
+"|<>      |  |      <>|     |'|\n"
+"|<>   .--------.   <>|     |.|\n"
+"|     |   ()   |     |     |P|\n"
+"|_____| (O\\/O) |_____|     |'|\n"
+"|     \\   /\\   /     |     |.|\n"
+"|------\\  \\/  /------|     |U|\n"
+"|       '.__.'       |     |'|\n"
+"|        |  |        |     |.|\n"
+":        |  |        :     |N|\n"
+" \\       |  |       /      |'|\n"
+"  \\<>    |  |    <>/       |.|\n"
+"   \\<>   |  |   <>/        |K|\n"
+"    `\\<> |  | <>/'         |'|\n"
+"jgs   `-.|__|.-`           \\ /\n"
+"                            ^\n");
 
             sleep(3);
-            printf("You take some time breathing out and wiping fruit juice off your face\n");
+            printf("You take some time breathing out and wiping fruit juice off your face\n\n");
             sleep(3);
             puts("A big smile enters and spreading from ear to ear. You hear the crowd cheering and you walk proudly up to the juicer.\n"
                 "Inside the demolished parts of the juicer a pile of ultra compressed golden batter has formed.\n"
@@ -564,9 +590,9 @@ void kitchenKnifeGame() {
     char ckg;
 
     printf("You pick up Grandma's Kitchen Knife and grab it firmly...\n");
-    puts("                                                        ___\n"
-     "                                                       |_  |\n"
-     "                                                        | |\n"
+    puts("                                                       ___\n"
+"                                                      |_  |\n"
+"                                                        | |\n"
 "__                      ____                            | |\n"
 "\\ ````''''----....____.'\\   ````''''--------------------| |--.             _____      .-.\n"
 " :.                      `-._                           | |   `''-----''''```     ``''|`: :|\n"
@@ -656,8 +682,6 @@ void* flyingGoblins() {
             printGoblinsFeet();
             printf("Dodged!!\n");
         }
-
-        dodgecount++;
     }
     printf("The Goblin Hordes fled...\n");
 }
@@ -665,7 +689,7 @@ void* flyingGoblins() {
 void* dodgingGoblins() {
 
     char ckkg;
-    while (read(STDIN_FILENO, &ckkg, 1) == 1 && dodgecount < 6) {
+    while (read(STDIN_FILENO, &ckkg, 1) == 1 && dodgecount < 7) {
         if (!(ckkg == 'a' || ckkg == 'd' || ckkg == 'j')) {
             dodgeright = false;
             dodgeleft = false;
@@ -716,6 +740,7 @@ void printGoblinsRight() {
         printf("Goblins hit you from the right and you fell to the ground bleeding your brain out.\n");
         handleDeath();
     }
+    dodgecount++;
 }
 
 void printGoblinsLeft() {
@@ -732,6 +757,7 @@ void printGoblinsLeft() {
         printf("Goblins hit you from the left and you fell to the ground bleeding your brain out.\n");
         handleDeath();
     }
+    dodgecount++;
 }
 
 void printGoblinsFeet() {
@@ -742,4 +768,5 @@ void printGoblinsFeet() {
         printf("Goblins gobbled your feet and you fell to the ground bleeding.\n The thirsty hordes take turns splitting your body into parts.\n");
         handleDeath();
     }
+    dodgecount++;
 }
