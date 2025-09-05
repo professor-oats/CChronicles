@@ -447,14 +447,38 @@ int roll10() {
 }
 
 void handleDeath() {
-    printf("GAME ENDED");
+    puts("        __                                           __\n"
+"       (**)                                         (**)\n"
+"       IIII                                         IIII\n"
+"       ####                                         ####\n"
+"       HHHH     Madness comes, and madness goes     HHHH\n"
+"       HHHH    An insane place, with insane moves   HHHH\n"
+"       ####   Battles without, for battles within   ####\n"
+"    ___IIII___        Where evil lives,          ___IIII___\n"
+" .-`_._\"**\"_._`-.      and evil rules         .-`_._\"**\"_._`-.\n"
+"|/``  .`\\/`.  ``\\|    Breaking them up,      |/``  .`\\/`.  ``\\|\n"
+"`     }    {     '  just breaking them in    `     }    {     '\n"
+"      ) () (  Quickest way out, quickest way wins  ) () (\n"
+"      ( :: )      Never disclose, never betray     ( :: )\n"
+"      | :: |   Cease to speak or cease to breath   | :: |\n"
+"      | )( |        And when you kill a man,       | )( |\n"
+"      | || |          you're a murderer            | || |\n"
+"      | || |             Kill many                 | || |\n"
+"      | || |        and you're a conqueror         | || |\n"
+"      | || |        Kill them all ... Ooh..        | || |\n"
+"      | || |           Oh you're a God!            | || |\n"
+"      ( () )                       -Megadeth       ( () )\n"
+"       \\  /                                         \\  /\n"
+"        \\/                                           \\/\n"
+);
+    printf("GAME ENDED\n");
     exit(0);
 }
 
 /// Doing Stuff while listening to keyboard from dodgingPlates
 void* flyingFruits() {
     int randomswitch;
-    printf("Plates are flying!!\nPrepare to guard LEFT ('A') or guard RIGHT ('D') or die!!\n");
+    printf("Fruits are flying!!\nPrepare to guard LEFT ('A') or guard RIGHT ('D') or die!!\n");
     while (!FLYINGFRUITSEND) {
         randomswitch = roll10();
         if (randomswitch % 2 == 0) {
@@ -577,6 +601,12 @@ void kitchenKnifeGame() {
 
     printf("Goblins to your right, goblins to your left, goblins everywhere!!\n");
 
+    /* Starting event threads */
+    pthread_create(&id_flyinggoblins, NULL, flyingGoblins, NULL);
+    pthread_create(&id_dodginggoblins, NULL, dodgingGoblins, NULL);
+    pthread_join(id_flyinggoblins, NULL);
+    pthread_join(id_dodginggoblins, NULL);
+
     disableRawMode();
 
 }
@@ -589,7 +619,7 @@ void* flyingGoblins() {
         if (randomswitchkg % 3 == 0) {
             printGoblinsRight();
             puts("                     ______\n"
-"                  .-"      "-.\n"
+"                  .-\"      \"-.\n"
 "                 /            \\\n"
 "                |              |\n"
 "                |,  .-.  .-.  ,|\n"
@@ -609,7 +639,7 @@ void* flyingGoblins() {
             puts("                              .___.\n"
 "          /)               ,-^     ^-.\n"
 "         //               /           \\\n"
-"         .-------| |--------------/  __     __  \\-------------------.__\n"
+".-------| |--------------/  __     __  \\-------------------.__\n"
 "|WMWMWMW| |>>>>>>>>>>>>> | />>\\   />>\\ |>>>>>>>>>>>>>>>>>>>>>>:>\n"
 "`-------| |--------------| \\__/   \\__/ |-------------------'^^\n"
 "         \\\\               \\    /|\\    /\n"
@@ -699,7 +729,7 @@ void printGoblinsLeft() {
     printf("Slash LEFT!!\n");
     sleep(1);
     if (!dodgeleft) {
-        printf("Goblins hir you from the left and you fell to the ground bleeding your brain out.\n");
+        printf("Goblins hit you from the left and you fell to the ground bleeding your brain out.\n");
         handleDeath();
     }
 }
