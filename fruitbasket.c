@@ -13,18 +13,23 @@
 
 void getFruit(int invalue, int inindex);
 void suspiciousJuicerGame();
-void* flyingPlates();  // Threaded
-void* dodgingPlates(); // Threaded
-void printPlatesRight();
-void printPlatesLeft();
-void rollingPinGame();
+void* flyingFruits();  // Threaded
+void* dodgingFruits(); // Threaded
+void* flyingGoblins(); // Threaded
+void* dodgingGoblins(); // Threaded
+void printFruitsRight();
+void printFruitsLeft();
+void printGoblinsRight();
+void printGoblinsLeft();
+void printGoblinsFeet();
 void kitchenKnifeGame();
 void handleDeath();
 int roll10();
 
-bool FLYINGPLATESEND = false;
+bool FLYINGFRUITSEND = false;
 bool dodgeright = false;
 bool dodgeleft = false;
+bool jump = false;
 int dodgecount = 0;
 
 
@@ -82,12 +87,9 @@ int main(void) {
     char c;
     char firstchoice[20];
     char firstchoicebig[20];
-    char stepstaken[4];
-    char fruitbasket[60];
 
     int cmpgod;
     int cmpstart;
-    int basketindex;
 
     int fruitsalad = 0;
     int fruitsaladlist[4];
@@ -219,8 +221,6 @@ int main(void) {
     // Swedish Cheese Grater is just a dummy and will ask user for a rechoice
     KITCHEN:
     int kitchenchoice;
-    int battermixlevel;
-    int luckycheck;
     char batter[4];
     puts("#########################\n"
         "###       LEVEL 2     ###\n"
@@ -231,36 +231,41 @@ int main(void) {
 
     printf("Your basket contains:\n");
     for (int k = 0; k < 4; k++) {
+        batter[k] = fruitsgathered[k][0];
         printf("%s\n", fruitsgathered[k]);
     }
 
 
     while (true) {
         puts("\nPick your tool:\n"
-        "1. Suspicious Juicer [Easiest]\n"
-        "2. Rolling Pin [Easy]\n"
-        "3. Swedish Cheese Grater [?]\n"
-        "4. Kitchen Knife [Hard]\n"
-        "5. Godmode [Cheater]");
+        "1. Suspicious Juicer [Easy]\n"
+        "2. Swedish Cheese Grater [?]\n"
+        "3. Kitchen Knife [Hard]\n"
+        "4. Godmode [Cheater]\n");
 
         scanf("%d", &kitchenchoice);
 
-        if (!(kitchenchoice > 0 && kitchenchoice < 6)) {
-            printf("Input 1-5 to make your choice.\n");
+        if (!(kitchenchoice > 0 && kitchenchoice < 5)) {
+            printf("Input 1-4 to make your choice.\n");
             while((getchar()) != '\n');  // Flush
             continue;
         }
 
-        if (kitchenchoice == 3) {
+        if (kitchenchoice == 2) {
             printf("Swedish Cheese Grater is not a good tool, try again\n");
         }
 
-        else if (kitchenchoice == 5) {
-            printf("Godmode is not allowed here!");
+        else if (kitchenchoice == 4) {
+            printf("Godmode is not allowed here!\n");
         }
 
         else if (kitchenchoice == 1) {
             suspiciousJuicerGame();
+            break;
+        }
+
+        else if (kitchenchoice == 3) {
+            kitchenKnifeGame();
             break;
         }
 
@@ -285,27 +290,27 @@ void suspiciousJuicerGame() {
     int secondcount = 0;
     int luckynumber;
     bool earringaquired = false;
-    //char cjg;
-    pthread_t id_flyingplates, id_dodgingplates;
+    pthread_t id_flyingfruits, id_dodgingfruits;
+
     puts("In the cupboard above you notice grandma's Suspicious Juicer.\n"
         "You remember from early childhood just how unreliable it can be.\n"
         "Grandma is waiting for her cake so no time to waste!\n"
         "Set the mixer level:\n"
-        "1 | 2 | 3 | 4 | 5 WARNING!!!!\n");
+        "1 | 2 | 3 | 4 WARNING!!!!\n");
 
     while (true) {
         scanf("%d", &mixerlevel);
-        if (!(mixerlevel> 0 && mixerlevel < 6)) {
+        if (!(mixerlevel> 0 && mixerlevel < 5)) {
             printf("Input 1-5 to set the level.\n");
             puts("Set the mixer level:\n"
-                   "1 | 2 | 3 | 4 | 5 WARNING!!!!\n");
+                   "1 | 2 | 3 | 4 WARNING!!!!\n");
             while((getchar()) != '\n');  // Flush
             continue;
         }
 
         if (mixerlevel == 1) {
             mixingseconds = 10;
-            printf("You are mixing.\n");
+            printf("You are mixing...\n");
             while (secondcount <= mixingseconds) {
                 switch (secondcount % 3) {
                     case 0: printf("Clang.\n"); break;
@@ -343,7 +348,7 @@ void suspiciousJuicerGame() {
 
         if (mixerlevel == 2) {
             mixingseconds = 10;
-            printf("You are mixing.\n");
+            printf("You are mixing...\n");
             while (secondcount <= mixingseconds) {
                 switch (secondcount % 3) {
                     case 0: printf("Vrrr.\n"); break;
@@ -367,7 +372,7 @@ void suspiciousJuicerGame() {
 
         if (mixerlevel == 3) {
             mixingseconds = 10;
-            printf("You are mixing.\n");
+            printf("You are mixing...\n");
             while (secondcount <= mixingseconds) {
                 switch (secondcount % 3) {
                     case 0: printf("Woosh.\n"); break;
@@ -388,7 +393,7 @@ void suspiciousJuicerGame() {
 
         if (mixerlevel == 4) {
             mixingseconds = 10;
-            printf("You are mixing.\n");
+            printf("You are mixing...\n");
             while (secondcount <= mixingseconds) {
                 switch (secondcount % 3) {
                     case 0: printf("GAAAUR.\n"); break;
@@ -404,19 +409,31 @@ void suspiciousJuicerGame() {
             puts("Machine is overheating and glowing, fruit juices are overfilling and spilling on the walls and all over\n"
                  "Grandma's dear kitchen!! You act fast and go for the plug, pull it out violently but the machine won't stop.\n"
                  "Its capacitor is overloaded and is now supplying it with continuous current. Grab a plate and defend yourself!\n");
+            sleep(7);
 
             enableRawMode();
-            /* Starting event thread */
-            pthread_create(&id_flyingplates, NULL, flyingPlates, NULL);
-            pthread_create(&id_dodgingplates, NULL, dodgingPlates, NULL);
-            pthread_join(id_flyingplates, NULL);
-            pthread_join(id_dodgingplates, NULL);
+            /* Starting event threads */
+            pthread_create(&id_flyingfruits, NULL, flyingFruits, NULL);
+            pthread_create(&id_dodgingfruits, NULL, dodgingFruits, NULL);
+            pthread_join(id_flyingfruits, NULL);
+            pthread_join(id_dodgingfruits, NULL);
 
-
-            //pthread_join(id_flyingplates, NULL);
             disableRawMode();
-            printf("YOU SURVIVED YOU BASTARD!\n");
+
             dodgecount = 0;
+            puts("You survived all flying fruits with fullfledged grace!\n"
+                "The neighbours heard the quarrel and their nosy noses now peak inside of Grandma's blinds.\n"
+                "Their eyes grow big and they see a plate covered shiny knight gnistering in the afternoon sun.\n"
+                "All hail Sir Fruitalot - Tamer of Suspicious Juicers!!\n");
+
+            sleep(3);
+            printf("You take some time breathing out and wiping fruit juice off your face\n");
+            sleep(3);
+            puts("A big smile enters and spreading from ear to ear. You hear the crowd cheering and you walk proudly up to the juicer.\n"
+                "Inside the demolished parts of the juicer a pile of ultra compressed golden batter has formed.\n"
+                "It shines bright and the aromas of berries, tarred boots and vegetables form red steams hovering.\n"
+                "Grandma's favorite! The hard work paid off!\n"
+                "Time to bake.\n");
 
             break;
 
@@ -434,26 +451,25 @@ void handleDeath() {
     exit(0);
 }
 
-/// Doing Stuff while listening to keyboard
-/// Let's learn if we can use functions as we want for the thread
-void* flyingPlates() {
+/// Doing Stuff while listening to keyboard from dodgingPlates
+void* flyingFruits() {
     int randomswitch;
     printf("Plates are flying!!\nPrepare to guard LEFT ('A') or guard RIGHT ('D') or die!!\n");
-    while (!FLYINGPLATESEND) {
+    while (!FLYINGFRUITSEND) {
         randomswitch = roll10();
         if (randomswitch % 2 == 0) {
-            printPlatesRight();
+            printFruitsRight();
         }
         else if (randomswitch > 0) {
-            printPlatesLeft();
+            printFruitsLeft();
         }
         printf("Blocked!!\n");
         dodgecount++;
     }
-    printf("Printing Thread Finished!\n");
+    printf("The fruit storm subsided...\n");
 }
 
-void* dodgingPlates() {
+void* dodgingFruits() {
 
     char cjg;
     while (read(STDIN_FILENO, &cjg, 1) == 1 && dodgecount < 3) {
@@ -475,13 +491,14 @@ void* dodgingPlates() {
             dodgeright = false;
         }
     }
+                        // **********************************************************************
+    dodgeright = true;  // Lousy workaround for logic failure somewhere. Spacerabbits are amazing
+    dodgeleft = true;   // **********************************************************************
 
-    dodgeright = true;
-    dodgeleft = true;
-    FLYINGPLATESEND = true;
+    FLYINGFRUITSEND = true;
 }
 
-void printPlatesRight() {
+void printFruitsRight() {
     sleep(1);
     printf("3\n");
     sleep(1);
@@ -492,12 +509,12 @@ void printPlatesRight() {
     printf("Guard RIGHT!!\n");
     sleep(1);
     if (!dodgeright) {
-        printf("Plate hit you right in the head and you fell to the ground bleeding your brain out.\n");
+        printf("Fruits hit you right in the head and you fell to the ground bleeding your brain out.\n");
         handleDeath();
     }
 }
 
-void printPlatesLeft() {
+void printFruitsLeft() {
     sleep(1);
     printf("3\n");
     sleep(1);
@@ -508,7 +525,191 @@ void printPlatesLeft() {
     printf("Guard LEFT!!\n");
     sleep(1);
     if (!dodgeleft) {
-        printf("Plate hit you right in the head and you fell to the ground bleeding your brain out.\n");
+        printf("Fruits hit you right in the head and you fell to the ground bleeding your brain out.\n");
+        handleDeath();
+    }
+}
+
+void kitchenKnifeGame() {
+    pthread_t id_flyinggoblins, id_dodginggoblins;
+    dodgeright = 0;
+    dodgeleft = 0;
+    dodgecount = 0;
+    FLYINGFRUITSEND = 0;
+    int runcount = 0;
+    char ckg;
+
+    printf("You pick up Grandma's Kitchen Knife and grab it firmly...\n");
+    puts("                                                        ___\n"
+     "                                                       |_  |\n"
+     "                                                        | |\n"
+"__                      ____                            | |\n"
+"\\ ````''''----....____.'\\   ````''''--------------------| |--.             _____      .-.\n"
+" :.                      `-._                           | |   `''-----''''```     ``''|`: :|\n"
+"  '::.                       `'--.._____________________| |                           | : :|\n"
+"    '::..       ----....._______________________________| |                           | : :|\n"
+"      `'-::...__________________________________________| |   .-''-..-'`-..-'`-..-''-.cjr :|\n"
+"           ```'''---------------------------------------| |--'                         `'-'\n"
+"                                                        | |\n"
+"                                                       _| |\n"
+"                                                      |___| cjr\n"
+);
+    sleep(3);
+    printf("Btzzzzz btzz..\n");
+    sleep(3);
+    puts("It starts glowing and vibrating, there are some ancient norse runes engraved in the cold steel.\n"
+        "It is resonating and the blade turns icy blue, you have learnt from watching Lord of The Rings that enemies are nearby.\n"
+        "SQUEEEEEEEEEEEEEEEEEK SQUOOOOOOORK!!!\n"
+    "A horde of Goblins are amounting over the yonder. No time to ponder - You break the door open and start to defend against the hordes!\n\n");
+    sleep(3);
+
+    printf("Use 'A' to slash left, 'D' to slash right, 'J' to jump and 'W' to run\n");
+    printf("Combat start! Run towards the Goblins by pressing 'W' rapidly\n");
+
+    enableRawMode();
+    while (read(STDIN_FILENO, &ckg, 1) == 1 && runcount < 7) {
+        if (ckg == 'w') {
+            printf("^\n");
+            runcount++;
+        }
+
+    }
+
+    printf("Goblins to your right, goblins to your left, goblins everywhere!!\n");
+
+    disableRawMode();
+
+}
+
+/// Doing Stuff while listening to keyboard from dodgingPlates
+void* flyingGoblins() {
+    int randomswitchkg;
+    while (!FLYINGFRUITSEND) {
+        randomswitchkg = roll10();
+        if (randomswitchkg % 3 == 0) {
+            printGoblinsRight();
+            puts("                     ______\n"
+"                  .-"      "-.\n"
+"                 /            \\\n"
+"                |              |\n"
+"                |,  .-.  .-.  ,|\n"
+"                | )(__/  \\__)( |\n"
+"                |/     /\\     \\|\n"
+"      (@_       (_     ^^     _)\n"
+" _     ) \\_______\\__|IIIIII|__/__________________________\n"
+"(_)@8@8{}<________|-\\IIIIII/-|___________________________>\n"
+"       )_/        \\          /\n"
+"      (@           `--------` jgs\n"
+"\n"
+"              FAAAAAAAAAAAAAAAATTSSSSS\n"
+);
+        }
+        else if (randomswitchkg == 1) {
+            printGoblinsLeft();
+            puts("                              .___.\n"
+"          /)               ,-^     ^-.\n"
+"         //               /           \\\n"
+"         .-------| |--------------/  __     __  \\-------------------.__\n"
+"|WMWMWMW| |>>>>>>>>>>>>> | />>\\   />>\\ |>>>>>>>>>>>>>>>>>>>>>>:>\n"
+"`-------| |--------------| \\__/   \\__/ |-------------------'^^\n"
+"         \\\\               \\    /|\\    /\n"
+"          \\)               \\   \\_/   /\n"
+"                            |       |\n"
+"                            |+H+H+H+|\n"
+"                            \\       /\n"
+"                             ^-----^\n"
+"\n"
+"                      CHOOOOOOOOOOOOOODDDDD\n"
+);
+        }
+        else if (randomswitchkg == 2) {
+            printGoblinsFeet();
+            printf("Dodged!!\n");
+        }
+
+        dodgecount++;
+    }
+    printf("The Goblin Hordes fled...\n");
+}
+
+void* dodgingGoblins() {
+
+    char ckkg;
+    while (read(STDIN_FILENO, &ckkg, 1) == 1 && dodgecount < 6) {
+        if (!(ckkg == 'a' || ckkg == 'd' || ckkg == 'j')) {
+            dodgeright = false;
+            dodgeleft = false;
+            jump = false;
+            continue;
+        }
+        if (ckkg == 'a') {
+            dodgeleft = true;
+            dodgeright = false;
+            jump = false;
+            sleep(1);
+            dodgeleft = false;
+        }
+        else if (ckkg == 'd') {
+            dodgeright = true;
+            dodgeleft = false;
+            jump = false;
+            sleep(1);
+            dodgeright = false;
+        }
+
+        else if (ckkg == 'j') {
+            jump = true;
+            dodgeright = false;
+            dodgeleft = false;
+            sleep(1);
+            jump = false;
+        }
+    }
+    jump = true;        // **********************************************************************
+    dodgeright = true;  // Lousy workaround for logic failure somewhere. Spacerabbits are amazing
+    dodgeleft = true;   // **********************************************************************
+
+    FLYINGFRUITSEND = true;
+}
+
+void printGoblinsRight() {
+    sleep(1);
+    printf("3\n");
+    sleep(1);
+    printf("2\n");
+    sleep(1);
+    printf("1\n");
+    sleep(1);
+    printf("Slash RIGHT!!\n");
+    sleep(1);
+    if (!dodgeright) {
+        printf("Goblins hit you from the right and you fell to the ground bleeding your brain out.\n");
+        handleDeath();
+    }
+}
+
+void printGoblinsLeft() {
+    sleep(1);
+    printf("3\n");
+    sleep(1);
+    printf("2\n");
+    sleep(1);
+    printf("1\n");
+    sleep(1);
+    printf("Slash LEFT!!\n");
+    sleep(1);
+    if (!dodgeleft) {
+        printf("Goblins hir you from the left and you fell to the ground bleeding your brain out.\n");
+        handleDeath();
+    }
+}
+
+void printGoblinsFeet() {
+    sleep(1);
+    printf("JUMP!!\n");
+    sleep(1);
+    if (!jump) {
+        printf("Goblins gobbled your feet and you fell to the ground bleeding.\n The thirsty hordes take turns splitting your body into parts.\n");
         handleDeath();
     }
 }
