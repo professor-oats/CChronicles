@@ -34,7 +34,7 @@ int main(void) {
         printf("%sred\n", KRED);
         printf("%sgreen\n", KGRN);
         printf("%sblue\n", KBLU);
-        printf("%syellow\n\n", KYEL);
+        printf("%syellow\x1B[0m\n\n", KYEL);
 
         scanf("%s", colorinput);
 
