@@ -50,7 +50,7 @@ void enableRawMode() {
 
 char fruits[256][15] = {
     "Cherry", "Banana", "Apple", "SnakePlisken", "GrannyCat", "OldBoot", "Pear", "VolvoV70", "Burzum",
-    "DrDre", "Cornflake", "Wheat", "Papaya", "Mango", "Potato", "Tomato", "DragonBall", "FineWhisky", "KrakenSlayer", "Pocahontas",
+    "DrDre", "Cornflakes", "Wheat", "Papaya", "Mango", "Potato", "Tomato", "DragonBall", "FineWhisky", "KrakenSlayer", "Pocahontas",
     "Spinach", "Date", "Blueberry", "Strawberry", "Bulbasaur", "Pikachu", "Mushroom", "Mozart", "Gatorade",
     "Onion", "Garlic", "Bumblebee", "Cinnamon", "Leek", "PolkaCane", "Ettelman", "Plum", "BlackBean", "Almond",
     "Hazelnut", "Chestnut", "Avocado", "Pineapple", "Pomegranate", "Raspberry", "Grapes", "Lemon", "Orange", "GrannyTeeth",
@@ -59,7 +59,7 @@ char fruits[256][15] = {
     "Paprika", "Lychee", "Excalibur", "Wormwood", "Nightshade", "FlyAmanthia", "FlaxSeeds", "SmallSnail", "PineSap", "MapleSap",
     "Unicycle",
     "Cherry", "Banana", "Apple", "SnakePlisken", "GrannyCat", "OldBoot", "Pear", "VolvoV70", "Burzum",
-    "DrDre", "Cornflake", "Wheat", "Papaya", "Mango", "Potato", "Tomato", "DragonBall", "FineWhisky", "KrakenSlayer", "Pocahontas",
+    "DrDre", "Cornflakes", "Wheat", "Papaya", "Mango", "Potato", "Tomato", "DragonBall", "FineWhisky", "KrakenSlayer", "Pocahontas",
     "Spinach", "Date", "Blueberry", "Strawberry", "Bulbasaur", "Pikachu", "Mushroom", "Mozart", "Gatorade",
     "Onion", "Garlic", "Bumblebee", "Cinnamon", "Leek", "PolkaCane", "Ettelman", "Plum", "BlackBean", "Almond",
     "Hazelnut", "Chestnut", "Avocado", "Pineapple", "Pomegranate", "Raspberry", "Grapes", "Lemon", "Orange", "GrannyTeeth",
@@ -68,7 +68,7 @@ char fruits[256][15] = {
     "Paprika", "Lychee", "Excalibur", "Wormwood", "Nightshade", "FlyAmanthia", "FlaxSeeds", "SmallSnail", "PineSap", "MapleSap",
     "Unicycle",
     "Cherry", "Banana", "Apple", "SnakePlisken", "GrannyCat", "OldBoot", "Pear", "VolvoV70", "Burzum",
-     "DrDre", "Cornflake", "Wheat", "Papaya", "Mango", "Potato", "Tomato", "DragonBall", "FineWhisky", "KrakenSlayer", "Pocahontas",
+     "DrDre", "Cornflakes", "Wheat", "Papaya", "Mango", "Potato", "Tomato", "DragonBall", "FineWhisky", "KrakenSlayer", "Pocahontas",
      "Spinach", "Date", "Blueberry", "Strawberry", "Bulbasaur", "Pikachu", "Mushroom", "Mozart", "Gatorade",
      "Onion", "Garlic", "Bumblebee", "Cinnamon", "Leek", "PolkaCane", "Ettelman", "Plum", "BlackBean", "Almond",
      "Hazelnut", "Chestnut", "Avocado", "Pineapple", "Pomegranate", "Raspberry", "Grapes", "Lemon", "Orange", "GrannyTeeth",
@@ -97,7 +97,7 @@ int main(void) {
     srand(time(NULL));
 
     puts("Welcome to the Adventures of Grandma's Fruitbasket!\n"
-         "You're goal is to gather fruits from your grandma's garden.\n"
+         "Your goal is to gather fruits from your grandma's garden.\n"
          "It has been a great year and there are a lot to harvest.\n"
          "Use the WASD keys to navigate in her garden and get as many fruits and vegetables you can.\n"
          "You will get a new vegetable/fruit after each 4 steps you take - Basket is full after 4 aquired fruits\n"
@@ -594,7 +594,7 @@ void kitchenKnifeGame() {
 "                                                      |_  |\n"
 "                                                        | |\n"
 "__                      ____                            | |\n"
-"\\ ````''''----....____.'\\   ````''''--------------------| |--.             _____      .-.\n"
+"\\ ````''''----....____.'\\   ````''''--------------------| |--.               _____      .-.\n"
 " :.                      `-._                           | |   `''-----''''```     ``''|`: :|\n"
 "  '::.                       `'--.._____________________| |                           | : :|\n"
 "    '::..       ----....._______________________________| |                           | : :|\n"
