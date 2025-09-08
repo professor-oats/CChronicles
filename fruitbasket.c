@@ -168,7 +168,9 @@ int main(void) {
                 }
             }
 
+            putchar('\n');
             getFruit(fruitsalad, gathercount);
+            putchar('\n');
             gathercount++;
             stepcount = 0;
             fruitfactor = 1;
@@ -187,22 +189,47 @@ int main(void) {
 
 
         if (c == 'w') {
-            puts("^");
+            switch (gathercount) {
+                case 0 : printf("Moving forward in the tall grass\n"); break;
+                case 1: printf("Moving forward on the shiny hill of amazing greens\n");break;
+                case 2: printf("Stepping over tiny stones in the cod pond\n"); break;
+                case 3: printf("Dancing around with garden dandelions\n"); break;
+                default: ;
+            }
             fruitfactor *= 1;
         }
 
         else if (c == 'a') {
-            puts("<");
+            switch (gathercount) {
+                case 0 : printf("Digging in the dirt on the left\n"); break;
+                case 1: printf("Walking on a tiny forest path\n"); break;
+                case 2: printf("Hugging soft cute sheep\n"); break;
+                case 3: printf("Looking for mushrooms on the left\n"); break;
+                default: ;
+            }
+
             fruitfactor *= 2;
         }
 
         else if (c == 's') {
-            puts("v");
+            switch (gathercount) {
+                case 0 : printf("Looking under a tree log on the path\n"); break;
+                case 1 : printf("Skipping with frogs in early morning rain pillows\n"); break;
+                case 2 : printf("Crouching on the knees trying to find berries and mushrooms\n"); break;
+                case 3: printf("Searching amongst blueberry and lingonberry bushes\n"); break;
+                default: ;
+            }
             fruitfactor *= 3;
         }
 
         else if (c == 'd') {
-            puts(">");
+            switch (gathercount) {
+                case 0 : printf("Checking crops on the right\n"); break;
+                case 1 : printf("Looking in grandma's shed storage\n"); break;
+                case 2: printf("Walking on a tiny forest path\n"); break;
+                case 3: printf("Looking for mushrooms on the right\n"); break;
+                default: ;
+            }
             fruitfactor *= 4;
         }
 
